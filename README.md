@@ -237,7 +237,7 @@ $togo->queue_count('test_queue' );
 ~~~
 
 ##6 获取一个队列的状态
-### queue_string
+### queue_status
 
 ##### *Paramer*
 
