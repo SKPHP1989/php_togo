@@ -44,6 +44,7 @@ PHP_METHOD(Togo, __destruct);
 PHP_METHOD(Togo, connect);
 PHP_METHOD(Togo, version);
 PHP_METHOD(Togo, counter_plus);
+PHP_METHOD(Togo, counter_reset);
 PHP_METHOD(Togo, counter_minus);
 PHP_METHOD(Togo, counter_get);
 PHP_METHOD(Togo, lock_lock);

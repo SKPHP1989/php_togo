@@ -50,6 +50,7 @@ const zend_function_entry togo_functions[] = {
 	PHP_ME(Togo, connect, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, version, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, counter_plus, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(Togo, counter_reset, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, counter_get, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, counter_minus, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Togo, lock_lock, NULL, ZEND_ACC_PUBLIC)
@@ -644,6 +645,49 @@ PHP_METHOD(Togo, counter_plus)
         RETURN_FALSE;
     }
     RETURN_LONG(atol(response));
+}
+/* }}} */
+
+/* {{{ proto long Togo::counter_reset()
+ */
+PHP_METHOD(Togo, counter_reset)
+{
+    zval *object = getThis();
+    TogoSock *togo_sock;
+    char *cmd , *response ,*key = NULL;
+    int cmd_len , response_len ,key_len;
+    long value = 1 ;
+    //togo sock get
+    if (togo_sock_get(object, &togo_sock TSRMLS_CC) < 0)
+    {   
+        RETURN_FALSE;
+    }
+    //param
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l",&key, &key_len ,&value) == FAILURE)
+    {
+        RETURN_FALSE;
+    }
+    //cmd
+    if(value <= 0)
+    {
+        cmd_len = spprintf(&cmd, 0, "COUNTER RESET %s %d\r\n", key ,1);
+    }else{
+        cmd_len = spprintf(&cmd, 0, "COUNTER RESET %s %ld\r\n", key ,value);
+    }
+    //sock write
+    if (togo_sock_write(togo_sock, cmd, cmd_len TSRMLS_CC) < 0)
+    {
+        efree(cmd);
+        RETURN_FALSE;
+    }
+    efree(cmd);
+    response = togo_sock_read(togo_sock, &response_len TSRMLS_CC);
+    //sock read
+    if (atol(response) == 0)
+    {
+        RETURN_TRUE;
+    }
+    RETURN_FALSE;
 }
 /* }}} */
 
