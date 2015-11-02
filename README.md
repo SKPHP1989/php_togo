@@ -143,7 +143,24 @@ $togo->counter_minus('test' ,6);
 $togo->counter_get('test');
 ~~~
 
-#3.队列模块协议：
+##4 计数器初始化
+### counter_reset
+
+##### *Paramer*
+
+*name*: string.
+
+##### *Return value*
+
+*BOOL*: `TRUE` on success, `FALSE` on error.
+
+##### *Example*
+
+~~~
+$togo->counter_reset('test');
+~~~
+
+#3.队列消息函数：
 
 ##1 从左边插入一个记录
 ### queue_lpush
@@ -253,7 +270,7 @@ $togo->queue_count('test_queue' );
 $togo->queue_status('test_queue' );
 ~~~
 
-#4.内存锁模块协议：
+#4.内存锁消息函数：
 ##1 LOCK操作
 ### lock_lock
 
