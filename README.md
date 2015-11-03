@@ -1,5 +1,8 @@
 #PHP EXTENSION FOR TOGO
 
+#环境要求
+Linux,php5.4-5.6<br/>
+(ps:本人亲测,5.4,5.5,5.6版本是可以的!)<br/>
 
 #安装php_togo
 root@localhost#wget https://github.com/SKPHP1989/php_togo/archive/master.zip<br/>
