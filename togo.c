@@ -40,11 +40,11 @@ ZEND_DECLARE_MODULE_GLOBALS(togo)
 /* True global resources - no need for thread safety here */
 static int le_togo;
 
-/* {{{ togo_functions[]
+/* {{{ togo_methods[]
  *
- * Every user visible function must have an entry in togo_functions[].
+ * Every user visible function must have an entry in togo_methods[].
  */
-const zend_function_entry togo_functions[] = {
+const zend_function_entry togo_methods[] = {
 	PHP_ME(Togo, __construct, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Togo, __destruct, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, connect, NULL, ZEND_ACC_PUBLIC)
@@ -63,7 +63,7 @@ const zend_function_entry togo_functions[] = {
     PHP_ME(Togo, queue_count, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(Togo, queue_status, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Togo, close, NULL, ZEND_ACC_PUBLIC)
-	PHP_FE_END	/* Must be the last line in togo_functions[] */
+	PHP_FE_END	/* Must be the last line in togo_methods[] */
 };
 /* }}} */
 
@@ -74,7 +74,7 @@ zend_module_entry togo_module_entry = {
 	STANDARD_MODULE_HEADER,
 #endif
 	"togo",
-	togo_functions,
+	togo_methods,
 	PHP_MINIT(togo),
 	PHP_MSHUTDOWN(togo),
 	PHP_RINIT(togo),		/* Replace with NULL if there's nothing to do at request start */
@@ -417,7 +417,7 @@ PHP_MINIT_FUNCTION(togo)
 {
 	//register Togo class
 	zend_class_entry togo_class_entry;
-    INIT_CLASS_ENTRY(togo_class_entry, "Togo", togo_functions);
+    INIT_CLASS_ENTRY(togo_class_entry, "Togo", togo_methods);
     togo_ce = zend_register_internal_class(&togo_class_entry TSRMLS_CC);
     //register TogoException class
     zend_class_entry togo_exception_class_entry;
@@ -433,7 +433,7 @@ PHP_MINIT_FUNCTION(togo)
         NULL,
         togo_sock_name, module_number
     );
-    
+
 	return SUCCESS;
 }
 /* }}} */
