@@ -94,11 +94,38 @@ typedef struct togo_sock_ {
 #define TOGO_RESPONE_TAIL "TOGO_E"
 
 /* togo reponse message status */
+#define TOGO_RESPONSE_STATUS_OK "TOGO_OK"
+
 #define TOGO_RESPONSE_STATUS_FAIL "TOGO_FAIL"
 #define TOGO_RESPONSE_STATUS_NULL "TOGO_NULL"
 #define TOGO_RESPONSE_STATUS_COMMANDBIG "TOGO_COMMAND_TOO_BIG"
 #define TOGO_RESPONSE_STATUS_BIG "TOO_BIG"
-#define TOGO_RESPONSE_STATUS_OK "TOGO_OK"
+#define TOGO_RESPONSE_STATUS_IS_EXIST "TOGO_IS_EXIST"
+#define TOGO_RESPONSE_STATUS_NOT_EXIST "TOGO_NOT_EXIST"
+
+/* togo reponse message code */
+#define TOGO_RESPONSE_STATUS_OK_CODE 0x00000000
+
+#define TOGO_RESPONSE_CODE_FAIL 0x00010001
+#define TOGO_RESPONSE_CODE_NULL 0x00010002
+#define TOGO_RESPONSE_CODE_COMMANDBIG 0x00010003
+#define TOGO_RESPONSE_CODE_BIG_CODE 0x00010004
+#define TOGO_RESPONSE_CODE_IS_EXIST 0x00010005
+#define TOGO_RESPONSE_CODE_NOT_EXIST 0x00010006
+#define TOGO_RESPONSE_CODE_ERROR 0x00010007
+#define TOGO_RESPONSE_CODE_CONNECT_FAIL 0x00010008
+#define TOGO_RESPONSE_CODE_CONNECT_TIMEOUT 0x00010009
+
+/* togo reponse message content */
+#define TOGO_RESPONSE_MSG_FAIL "Togo fail to handle request!"
+#define TOGO_RESPONSE_MSG_NULL "Togo response is null!"
+#define TOGO_RESPONSE_MSG_COMMANDBIG "Togo Commond is too big!"
+#define TOGO_RESPONSE_MSG_BIG "Togo get or send message is too big!"
+#define TOGO_RESPONSE_MSG_IS_EXIST "Togo element is exists!"
+#define TOGO_RESPONSE_MSG_NOT_EXIST "Togo element is not exists!"
+#define TOGO_RESPONSE_MSG_ERROR "Togo protocol error!"
+#define TOGO_RESPONSE_MSG_CONNECT_FAIL "Togo can't connect to %s:%d"
+#define TOGO_RESPONSE_MSG_CONNECT_TIMEOUT "Togo connect host %s:%u over %u second!"
 
 /* {{{ internal function protos */
 void add_constant_long(zend_class_entry *ce, char *name, int value);

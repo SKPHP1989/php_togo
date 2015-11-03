@@ -307,25 +307,43 @@ PHPAPI void togo_check_eof(TogoSock *togo_sock TSRMLS_DC)
  */
 PHPAPI int togo_sock_response_status_check(char *inbuf TSRMLS_DC)
 {
-
-    if(strcmp("TOGO_STOGO_FAILTOGO_E\r\n" ,inbuf) == 0)//操作失败
+    char * response;
+    response = togo_sock_response_parser(inbuf TSRMLS_CC);
+    //data is not exist
+    if(response ==  NULL){
+        zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_ERROR TSRMLS_CC ,TOGO_RESPONSE_MSG_ERROR);
+        return -1;
+    }
+    if(strcmp(TOGO_RESPONSE_STATUS_FAIL ,response) == 0)//fail
     {
-
-	    zend_throw_exception_ex( togo_exception_ce ,0 TSRMLS_CC,"TOGO_STOGO_FAILTOGO_E");
+	    zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_FAIL TSRMLS_CC ,TOGO_RESPONSE_MSG_FAIL);
 		return -1;
-	}else if(strcmp("TOGO_STOGO_COMMAND_TOO_BIGTOGO_E\r\n" ,inbuf) == 0){//命令行太长
+	}else if(strcmp(TOGO_RESPONSE_STATUS_NULL ,response) == 0){//null
 
-	   	zend_throw_exception_ex( togo_exception_ce ,0 TSRMLS_CC,"TOGO_STOGO_COMMAND_TOO_BIGTOGO_E");
+	   	zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_NULL TSRMLS_CC ,TOGO_RESPONSE_MSG_NULL);
 		return -1;
-	}else if(strcmp("TOGO_STOO_BIGTOGO_E\r\n" ,inbuf) == 0){//需要发送/接收的内容太大
+	}else if(strcmp(TOGO_RESPONSE_STATUS_COMMANDBIG ,response) == 0){//command is too big
 
-		zend_throw_exception_ex( togo_exception_ce ,0 TSRMLS_CC,"TOGO_STOO_BIGTOGO_E");
-		return -1;
-	}else{
+        zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_COMMANDBIG TSRMLS_CC ,TOGO_RESPONSE_MSG_COMMANDBIG);
+        return -1;
+    }else if(strcmp(TOGO_RESPONSE_STATUS_BIG ,response) == 0){//request data or response data is too big
 
-		return 0;
-	}
+        zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_BIG_CODE TSRMLS_CC ,TOGO_RESPONSE_MSG_BIG);
+        return -1;
+    }else if(strcmp(TOGO_RESPONSE_STATUS_IS_EXIST ,response) == 0){//element is exist
 
+        zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_IS_EXIST TSRMLS_CC ,TOGO_RESPONSE_MSG_IS_EXIST);
+        return -1;
+    }else if(strcmp(TOGO_RESPONSE_STATUS_NOT_EXIST ,response) == 0){//element is not exist
+
+        zend_throw_exception_ex( togo_exception_ce ,TOGO_RESPONSE_CODE_NOT_EXIST TSRMLS_CC ,TOGO_RESPONSE_MSG_NOT_EXIST);
+        return -1;
+    }else if(strcmp(TOGO_RESPONSE_STATUS_OK ,response) == 0){//response success
+
+        return 0;
+    }else{
+        return 0;
+    }
 }
 
 /**
@@ -415,11 +433,7 @@ PHP_MINIT_FUNCTION(togo)
         NULL,
         togo_sock_name, module_number
     );
-    //register constant
-	add_constant_long(togo_ce, "TOGO_NOT_FOUND", TOGO_NOT_FOUND);
-	add_constant_long(togo_ce, "TOGO_STRING", TOGO_STRING);
-	add_constant_long(togo_ce, "TOGO_SET", TOGO_SET);
-	add_constant_long(togo_ce, "TOGO_LIST", TOGO_LIST);
+    
 	return SUCCESS;
 }
 /* }}} */
@@ -514,7 +528,14 @@ PHP_METHOD(Togo, connect)
     //time out set
     if (timeout.tv_sec < 0L || timeout.tv_sec > INT_MAX)
     {
-        zend_throw_exception(togo_exception_ce, "Invalid timeout", 0 TSRMLS_CC);
+        zend_throw_exception_ex(
+            togo_exception_ce,
+            TOGO_RESPONSE_CODE_CONNECT_TIMEOUT TSRMLS_CC,
+            TOGO_RESPONSE_MSG_CONNECT_TIMEOUT,
+            host,
+            port,
+            timeout.tv_sec
+        );
         RETURN_FALSE;
     }
     //connect to server
@@ -524,8 +545,8 @@ PHP_METHOD(Togo, connect)
         togo_free_socket(togo_sock);
         zend_throw_exception_ex(
             togo_exception_ce,
-            0 TSRMLS_CC,
-            "Can't connect to %s:%d",
+            TOGO_RESPONSE_CODE_CONNECT_FAIL TSRMLS_CC,
+            TOGO_RESPONSE_MSG_CONNECT_FAIL,
             host,
             port
         );
@@ -550,7 +571,7 @@ PHP_METHOD(Togo, version)
     {	
         RETURN_FALSE;
     }
-    cmd_len = spprintf(&cmd, 0, "%s\r\n", "VERSION");
+    cmd_len = spprintf(&cmd, 0, "VERSION\r\n");
     //sock write
     if (togo_sock_write(togo_sock, cmd, cmd_len TSRMLS_CC) < 0)
     {
