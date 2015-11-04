@@ -5,7 +5,7 @@ Linux,php5.4-5.6<br/>
 (ps:本人亲测,5.4,5.5,5.6版本是可以的!)<br/>
 
 #安装php_togo
-root@localhost#wget https://github.com/SKPHP1989/php_togo/archive/master.zip<br/>
+root@localhost#wget https://raw.githubusercontent.com/SKPHP1989/php_togo/master/version/php_togo_0.0.1.zip<br/>
 root@localhost#unzip master.zip<br/>
 root@localhost#cd master<br/>
 root@localhost#php-src/bin/phpize --with-php-config=php-src/bin/php-config<br/>
